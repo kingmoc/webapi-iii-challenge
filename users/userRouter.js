@@ -25,7 +25,7 @@ router.get('/:id/posts', validateUserId, (req, res) => {
 
     Users.getUserPosts(req.params.id)
         .then(post => {
-            if(!post.id) {
+            if(post.length === 0) {
                 res.status(200).json({ message: "User Doesn't Have any Post :( "})
             } else {
             res.status(200).send(post)
