@@ -42,7 +42,7 @@ router.get('/:id', validateUserId, (req, res) => {
     //     })
 });
 
-router.get('/:id/posts', (req, res) => {
+router.get('/:id/posts', validateUserId, (req, res) => {
 
     Users.getUserPosts(req.params.id)
         .then(post => {
@@ -79,6 +79,19 @@ router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
             res.status(500).json( { error: "The post information could not be added." })
         })
 
+});
+
+router.put('/:id', validateUserId, validateUser, (req, res) => {
+    const userId = req.params.id
+    const userChange = req.body
+
+    Users.update(userId, userChange)
+        .then(count => {
+            res.status(201).json({ message: "User updated Successfully"})
+        })
+        .catch(err => {
+            res.status(500).json( { error: "The user information could not be updated." })
+        })
 });
 
 router.delete('/:id', validateUserId, (req, res) => {
