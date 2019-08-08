@@ -1,5 +1,6 @@
 const express = require('express')
 const Users = require('./userDb')
+const Posts = require('../posts/postDb')
 
 const router = express.Router();
 
@@ -65,8 +66,30 @@ router.post('/', validateUser, (req, res) => {
         })
 });
 
-router.post('/:id/posts', (req, res) => {
+router.post('/:id/posts', validateUserId, validatePost, (req, res) => {
+    const newPost = req.body
+    const userId = req.params.id
+    newPost.user_id = userId
 
+    Posts.insert(newPost)
+        .then(post => {
+            res.status(200).send(post)
+        })
+        .catch(err => {
+            res.status(500).json( { error: "The post information could not be added." })
+        })
+
+});
+
+router.delete('/:id', validateUserId, (req, res) => {
+
+    Users.remove(req.params.id)
+        .then(num => {
+            res.status(204).end()
+        })
+        .catch(err => {
+            res.status(500).json( { error: "The user information could not be deleted." })
+        })
 });
 
 
@@ -89,8 +112,6 @@ function validateUserId(req, res, next) {
         .catch(err => {
             res.status(500).json({error: "The user information could not be retrieved."})
         })
-
-    next()
 };
 
 function validateUser(req, res, next) {
@@ -109,8 +130,15 @@ function validateUser(req, res, next) {
 
 function validatePost(req, res, next) {
     const post = req.body
-
     
+    if(!post.text) {
+        res.status(400).json({ message: "missing post data" }) 
+    } else if(!post.text.trim()) {
+        res.status(400).json({ message: "missing required text field" })         
+    } else {
+        next()
+    }
+
 };
 
 
