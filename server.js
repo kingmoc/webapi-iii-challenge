@@ -6,13 +6,20 @@ server.use(express.json())
 
 const logger = (req, res, next) => {
   const { method, url } = req
+
+  const options = {
+    day: 'numeric',
+    month: 'short',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }
   const date = new Date()
-  // console.log(date)
 
   console.table({
     "HTTP Request Type": method,
     "Endpoint URL": url,
-    "Request Timestamp": date
+    "Request Timestamp": date.toLocaleDateString("en-US", options)
   })
   next()
 }

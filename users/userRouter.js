@@ -111,10 +111,10 @@ function validateUserId(req, res, next) {
 };
 
 function validateUser(req, res, next) {
-    console.log(req.body)
+    // console.log(req.body)
     const user = req.body
 
-    if(!user.name) {
+    if(!Object.keys(user).length) {
         res.status(400).json({ message: "missing user data" }) 
     } else if(!user.name.trim()) {
         res.status(400).json({ message: "missing required name field" })         
@@ -127,7 +127,7 @@ function validateUser(req, res, next) {
 function validatePost(req, res, next) {
     const post = req.body
     
-    if(!post.text) {
+    if(!Object.keys(post).length) {
         res.status(400).json({ message: "missing post data" }) 
     } else if(!post.text.trim()) {
         res.status(400).json({ message: "missing required text field" })         
