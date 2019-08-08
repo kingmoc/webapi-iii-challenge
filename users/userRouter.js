@@ -53,7 +53,19 @@ router.get('/:id/posts', (req, res) => {
 
 });
 
-router.post('/', (req, res) => {
+router.post('/', validateUser, (req, res) => {
+    const newUser = req.body
+
+    Users.insert(newUser)
+        .then(user => {
+            res.status(200).send(user)
+        })
+        .catch(err => {
+            res.status(500).json( { error: "The user information could not be added." })
+        })
+});
+
+router.post('/:id/posts', (req, res) => {
 
 });
 
@@ -82,7 +94,23 @@ function validateUserId(req, res, next) {
 };
 
 function validateUser(req, res, next) {
+    console.log(req.body)
+    const user = req.body
 
+    if(!user.name) {
+        res.status(400).json({ message: "missing user data" }) 
+    } else if(!user.name.trim()) {
+        res.status(400).json({ message: "missing required name field" })         
+    } else {
+        next()
+    }
+
+};
+
+function validatePost(req, res, next) {
+    const post = req.body
+
+    
 };
 
 
